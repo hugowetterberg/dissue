@@ -1,0 +1,9 @@
+; $Id$
+package = dbug
+name = Distributed bug tracking
+description = Enables bug reporting from different Drupal sites
+dependencies[] = services
+dependencies[] = taxonomy
+dependencies[] = rest_server
+dependencies[] = services_oauth
+core = 6.x
