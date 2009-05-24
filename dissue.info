@@ -1,5 +1,5 @@
 ; $Id$
-package = dbug
+package = dissue
 name = Distributed bug tracking
 description = Enables bug reporting from different Drupal sites
 dependencies[] = services

@@ -48,9 +48,3 @@ Components
 ===============
 
 * Global and project-specific
-
-Categories & Tags
-==================
-
-* Global
-* Uses taxonomy

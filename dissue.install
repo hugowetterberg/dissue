@@ -1,19 +1,19 @@
 <?php
 // $Id$
 
-function dbug_install() {
-  drupal_install_schema('dbug');
+function dissue_install() {
+  drupal_install_schema('dissue');
 }
 
-function dbug_uninstall() {
-  drupal_uninstall_schema('dbug');
+function dissue_uninstall() {
+  drupal_uninstall_schema('dissue');
 }
 
-function dbug_schema() {
+function dissue_schema() {
   $schema = array();
 
-  $schema['dbug_site'] = array(
-    'description' => 'Information about dbug sites',
+  $schema['dissue_site'] = array(
+    'description' => 'Information about dissue sites',
     'fields' => array(
       'sid' => array(
         'description' => 'The local id for the site.',
@@ -40,9 +40,10 @@ function dbug_schema() {
         'not null'    => TRUE
       ),
     ),
+    'primary key' => array('sid'),
   );
 
-  $schema['dbug_issue'] = array(
+  $schema['dissue_issue'] = array(
     'description' => 'Stores information about issues and issue comments',
     'fields' => array(
       'liid' => array(
@@ -143,12 +144,11 @@ function dbug_schema() {
     ),
     'primary key' => array('liid'),
     'indexes' => array(
-      'id' => array('sid', 'iid'),
       'site' => array('sid'),
     ),
   );
 
-  $schema['dbug_users'] = array(
+  $schema['dissue_users'] = array(
     'description' => 'Stores information about local and remote users',
     'fields' => array(
       'luid' => array(

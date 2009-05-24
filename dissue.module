@@ -1,2 +1,16 @@
 <?php
 // $Id$
+
+function dissue_menu() {
+  $menu = array();
+
+  $menu['dissue/create'] = array(
+    '#title' => 'Create issue',
+    '#file' => 'dissue.inc',
+    '#page callback' => 'drupal_get_form',
+    '#page arguments' => array('_dissue_create'),
+    '#access arguments' => array('dissue create'),
+  );
+
+  return $menu;
+}
