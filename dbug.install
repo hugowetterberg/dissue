@@ -1,3 +1,192 @@
 <?php
 // $Id$
 
+function dbug_install() {
+  drupal_install_schema('dbug');
+}
+
+function dbug_uninstall() {
+  drupal_uninstall_schema('dbug');
+}
+
+function dbug_schema() {
+  $schema = array();
+
+  $schema['dbug_site'] = array(
+    'description' => 'Information about dbug sites',
+    'fields' => array(
+      'sid' => array(
+        'description' => 'The local id for the site.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'uri' => array(
+        'description' => 'Uri to the site',
+        'type' => 'varchar',
+        'length' => 250,
+        'not null' => TRUE,
+      ),
+      'consumer_key' => array(
+        'description' => 'The consumer that the remote site is registered as.',
+        'type'        => 'varchar',
+        'length'      => 32,
+        'not null'    => TRUE
+      ),
+      'access_key' => array(
+        'description' => 'The access key we can use to access the remote site.',
+        'type'        => 'varchar',
+        'length'      => 32,
+        'not null'    => TRUE
+      ),
+    ),
+  );
+
+  $schema['dbug_issue'] = array(
+    'description' => 'Stores information about issues and issue comments',
+    'fields' => array(
+      'liid' => array(
+        'description' => 'The local id for the issue.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'title' => array(
+        'description' => 'Issue title',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'priority' => array(
+        'description' => 'The priority for the issue',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'description' => array(
+        'description' => 'The description of the issue',
+        'type' => 'text',
+      ),
+      'nid' => array(
+        'description' => 'The node that reflects this issue, if any.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'sid' => array(
+        'description' => 'The site that the issue belongs to.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'luid' => array(
+        'description' => 'The user that created this issue.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'aluid' => array(
+        'description' => 'The user that has been assigned to this issue.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'project' => array(
+        'description' => 'The project name',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'version' => array(
+        'description' => 'Project version',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+      ),
+      'status' => array(
+        'description' => 'Issue status',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+      ),
+      'type' => array(
+        'description' => 'Issue type',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+      ),
+      'component' => array(
+        'description' => 'Issue component',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'category' => array(
+        'description' => 'Issue category',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'tags' => array(
+        'description' => 'Issue tags',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'data' => array(
+        'description' => 'Issue data - environment info etc.',
+        'type' => 'text',
+      ),
+    ),
+    'primary key' => array('liid'),
+    'indexes' => array(
+      'id' => array('sid', 'iid'),
+      'site' => array('sid'),
+    ),
+  );
+
+  $schema['dbug_users'] = array(
+    'description' => 'Stores information about local and remote users',
+    'fields' => array(
+      'luid' => array(
+        'description' => 'The local id for the user.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'sid' => array(
+        'description' => 'The site that the user belongs to.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'uid' => array(
+        'description' => 'The site user id.',
+        'type'        => 'int',
+        'unsigned'    => TRUE,
+        'not null'    => TRUE,
+      ),
+      'name' => array(
+        'description' => 'User name',
+        'type' => 'varchar',
+        'length' => 250,
+        'not null' => TRUE,
+      ),
+      'data' => array(
+        'description' => 'Data for the user stored as json',
+        'type' => 'text',
+      ),
+    ),
+    'primary key' => array('luid'),
+    'indexes' => array(
+      'id' => array('sid', 'uid'),
+      'site' => array('sid'),
+    )
+  );
+
+  return $schema;
+}
