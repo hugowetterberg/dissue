@@ -23,7 +23,6 @@ Issues
   * Priority - use the SCRUM idea for priority? Never allow the same priority to be set for two issues.
   * Project
   * Version
-  * Milestone
   * Status - open, closed
   * Component
   * Type - bug, feature request, support and so on
