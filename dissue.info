@@ -6,4 +6,6 @@ dependencies[] = services
 dependencies[] = taxonomy
 dependencies[] = rest_server
 dependencies[] = services_oauth
+dependencies[] = services_oop
+dependencies[] = autoload
 core = 6.x

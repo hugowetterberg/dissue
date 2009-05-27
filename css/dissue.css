@@ -1,0 +1,14 @@
+/* $Id$ */
+
+.dissue-form .form-item {
+  width: 75%;
+}
+
+.dissue-form .dissue-options {
+  float: right;
+  width: 25%;
+}
+
+.dissue-form .form-submit {
+  float: left;
+}

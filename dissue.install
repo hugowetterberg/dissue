@@ -3,10 +3,18 @@
 
 function dissue_install() {
   drupal_install_schema('dissue');
+
+  // Create a site entry for the local site
+  $local = array(
+    'uri' => url('', array('absolute' => TRUE)),
+  );
+  drupal_write_record('dissue_site', $local);
+  variable_set('dissue_local_site', $local['sid']);
 }
 
 function dissue_uninstall() {
   drupal_uninstall_schema('dissue');
+  variable_del('dissue_local_site');
 }
 
 function dissue_schema() {
@@ -51,6 +59,13 @@ function dissue_schema() {
         'type' => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
+      ),
+      'pliid' => array(
+        'description' => 'The local id for the issue parent.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
       ),
       'title' => array(
         'description' => 'Issue title',
@@ -148,7 +163,7 @@ function dissue_schema() {
     ),
   );
 
-  $schema['dissue_users'] = array(
+  $schema['dissue_user'] = array(
     'description' => 'Stores information about local and remote users',
     'fields' => array(
       'luid' => array(

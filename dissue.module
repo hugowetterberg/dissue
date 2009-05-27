@@ -1,16 +1,27 @@
 <?php
 // $Id$
 
-function dissue_menu() {
-  $menu = array();
-
-  $menu['dissue/create'] = array(
-    '#title' => 'Create issue',
-    '#file' => 'dissue.inc',
-    '#page callback' => 'drupal_get_form',
-    '#page arguments' => array('_dissue_create'),
-    '#access arguments' => array('dissue create'),
+/**
+ * Implementation of hook_autoload_info().
+ */
+function dissue_autoload_info() {
+  return array(
+    'DIssue' => array(
+      'file' => 'includes/DIssue.php',
+    ),
   );
+}
 
-  return $menu;
+/**
+ * @see DIssue::hook_perm().
+ */
+function dissue_perm() {
+  return DIssue::hook_perm();
+}
+
+/**
+ * @see DIssue::hook_menu().
+ */
+function dissue_menu() {
+  return DIssue::hook_menu();
 }
