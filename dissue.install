@@ -51,7 +51,7 @@ function dissue_schema() {
     'primary key' => array('sid'),
   );
 
-  $schema['dissue_issue'] = array(
+  $schema['dissue'] = array(
     'description' => 'Stores information about issues and issue comments',
     'fields' => array(
       'liid' => array(
@@ -59,13 +59,6 @@ function dissue_schema() {
         'type' => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
-      ),
-      'pliid' => array(
-        'description' => 'The local id for the issue parent.',
-        'type' => 'int',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-        'default' => 0,
       ),
       'title' => array(
         'description' => 'Issue title',
@@ -91,8 +84,22 @@ function dissue_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
+      'iid' => array(
+        'description' => 'The id of the issue at the source site.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
       'sid' => array(
         'description' => 'The site that the issue belongs to.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'ssid' => array(
+        'description' => 'The site that submitted the issue.',
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
@@ -103,18 +110,21 @@ function dissue_schema() {
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
+        'default' => 0,
       ),
       'aluid' => array(
         'description' => 'The user that has been assigned to this issue.',
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
+        'default' => 0,
       ),
       'project' => array(
         'description' => 'The project name',
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
+        'default' => '',
       ),
       'version' => array(
         'description' => 'Project version',
@@ -132,12 +142,6 @@ function dissue_schema() {
         'description' => 'Issue type',
         'type' => 'varchar',
         'length' => 32,
-        'not null' => TRUE,
-      ),
-      'component' => array(
-        'description' => 'Issue component',
-        'type' => 'varchar',
-        'length' => 255,
         'not null' => TRUE,
       ),
       'category' => array(
@@ -160,6 +164,8 @@ function dissue_schema() {
     'primary key' => array('liid'),
     'indexes' => array(
       'site' => array('sid'),
+      'node' => array('nid'),
+      'project' => array('project'),
     ),
   );
 

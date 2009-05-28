@@ -6,7 +6,17 @@ function _dissue_create() {
 }
 
 function _dissue_create_submit($form, $form_state) {
-  
+  $values = $form_state['values'];
+  $issue = array(
+    'project' => $values['issue_project'],
+    'title' => $values['title'],
+    'description' => $values['description'],
+    'type' => $values['issue_options']['type'],
+    'category' => $values['issue_options']['category'],
+    'status' => $values['issue_options']['status'],
+  );
+  $issue = DIssue::issueDefaults($issue);
+  DIssue::write($issue);
 }
 
 function _dissue_form_get($issue=NULL, $comment=FALSE) {
@@ -17,7 +27,6 @@ function _dissue_form_get($issue=NULL, $comment=FALSE) {
     '#attributes' => array(
       'class' => 'dissue-form',
     ),
-    '#after_build' => array('_dissue_form_side_effects'),
   );
 
   $form['title'] = array(
@@ -44,6 +53,7 @@ function _dissue_form_get($issue=NULL, $comment=FALSE) {
 
 function _dissue_form_side_effects($form) {
   drupal_add_css(drupal_get_path('module', 'dissue') . '/css/dissue.css');
+  drupal_add_js(drupal_get_path('module', 'dissue') . '/script/issue_form.js');
   return $form;
 }
 
@@ -57,6 +67,10 @@ function _dissue_form_default($issue, $attr, $default='') {
 }
 
 function _dissue_form_extend(&$form, $issue, $comment=FALSE) {
+  global $user;
+
+  $form['#after_build'][] = '_dissue_form_side_effects';
+
   $form['issue_options'] = array(
     '#type' => 'fieldset',
     '#collapsible' => TRUE,
@@ -87,19 +101,54 @@ function _dissue_form_extend(&$form, $issue, $comment=FALSE) {
     '#default_value' => _dissue_form_default($issue, 'category'),
     '#options' => DIssue::issueCategories(),
   );
-
-  $projects = DIssue::getProjects();
-  $p_opts = array();
-  foreach ($projects as $name => $info) {
-    $p_opts[$name] = $info['title'] . ($info['version'] ? ' v.' . $info['version'] : '');
+  
+  if (module_exists('dblog')) {
+    $form['issue_watchdog'] = array(
+      '#type' => 'fieldset',
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#title' => t('Included log items'),
+      '#tree' => TRUE,
+      '#attributes' => array(
+        'class' => 'watchdog-items',
+      ),
+    );
+    
+    $res = db_query_range("SELECT wid, message, variables, timestamp FROM {watchdog}
+      WHERE uid=%d
+      ORDER BY timestamp DESC", array(
+        ':uid' => $user->uid,
+    ), 0, 10);
+    while ($item = db_fetch_object($res)) {
+      $form['issue_watchdog'][$item->wid] = array(
+        '#type' => 'checkbox',
+        '#title' => theme('dissue_log_item', $item),
+        '#default_value' => variable_get('dissue_include_watchdog_by_default', TRUE),
+      );
+    }
   }
 
-  $form['issue_project'] = array(
-    '#type' => 'select',
-    '#title' => t('Project'),
-    '#default_value' => _dissue_form_default($issue, 'project'),
-    '#options' => $p_opts,
-  );
+  if (!variable_get('dissue_only_site_issues', FALSE)) {
+    $projects = DIssue::getProjects();
+    $p_opts = array();
+    foreach ($projects as $name => $info) {
+      $p_opts[$name] = $info['title'] . ($info['version'] ? ' v.' . $info['version'] : '');
+    }
+
+    $form['issue_project'] = array(
+      '#type' => 'select',
+      '#title' => t('Project'),
+      '#default_value' => _dissue_form_default($issue, 'project'),
+      '#options' => $p_opts,
+    );
+  }
+  else {
+    $form['issue_project'] = array(
+      '#type' => 'value',
+      '#value' => url('', array('absolute' => TRUE)),
+    );
+  }
+  
 }
 
 function _dissue_handle_webhook($hook, $id, $nonce=NULL) {

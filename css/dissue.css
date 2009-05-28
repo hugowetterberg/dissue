@@ -12,3 +12,7 @@
 .dissue-form .form-submit {
   float: left;
 }
+
+.dissue-form .bulk-ops a {
+  margin-right: 10px;
+}

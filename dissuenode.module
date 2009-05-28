@@ -1,0 +1,40 @@
+<?php
+// $Id$
+
+function dissuenode_node_info() {
+  return array(
+    'dissue' => array(
+      'name' => t('Issue'),
+      'description' => t('A issue is a error report, feature request or other message to support.'),
+      'module' => 'dissuenode',
+      'has_body' => TRUE,
+      'body_label' => t('Description'),
+    ),
+  );
+}
+
+function dissuenode_load($node) {
+  $values = new stdClass();
+  $res = db_fetch_object(db_query("SELECT * FROM {dissue} WHERE nid=%d", array(
+    ':nid' => $node->nid,
+  )));
+  if ($props = db_fetch_object($res)) {
+    unset($props->nid);
+    unset($props->title);
+    unset($props->description);
+    $values->issue = $props;
+  }
+  return $values;
+}
+
+function dissuenode_insert($node) {
+  
+}
+
+function dissuenode_update($node) {
+  
+}
+
+function dissuenode_delete($node) {
+  
+}

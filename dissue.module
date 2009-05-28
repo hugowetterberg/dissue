@@ -9,19 +9,29 @@ function dissue_autoload_info() {
     'DIssue' => array(
       'file' => 'includes/DIssue.php',
     ),
+    'DIssueHooks' => array(
+      'file' => 'includes/DIssueHooks.php',
+    ),
   );
 }
 
 /**
- * @see DIssue::hook_perm().
+ * @see DIssueHooks::theme().
  */
-function dissue_perm() {
-  return DIssue::hook_perm();
+function dissue_theme() {
+  return DIssueHooks::theme();
 }
 
 /**
- * @see DIssue::hook_menu().
+ * @see DIssueHooks::perm().
+ */
+function dissue_perm() {
+  return DIssueHooks::perm();
+}
+
+/**
+ * @see DIssueHooks::menu().
  */
 function dissue_menu() {
-  return DIssue::hook_menu();
+  return DIssueHooks::menu();
 }
