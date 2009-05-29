@@ -23,6 +23,11 @@ function dissue_views_data() {
   );
   // Users
   $data['dissue_user']['table']['group']  = t('DIssue user info');
+  $data['dissue_user']['table']['base'] = array(
+    'field' => 'luid',
+    'title' => t('DIssue User'),
+    'help' => t("Remote and local users in the issue tracking system."),
+  );
 
   // Convenient declaration to merge with for most fields
   $plain_string_field = array(
@@ -58,7 +63,7 @@ function dissue_views_data() {
     'help' => t('The luid of the user that reported the issue.'),
   ), $plain_num_field);
 
-  $data['dissue']['luid'] = array_merge(array(
+  $data['dissue']['aluid'] = array_merge(array(
     'title' => t('Assignee luid'),
     'help' => t('The luid of the user that has been assigned to the issue.'),
   ), $plain_num_field);
@@ -99,13 +104,23 @@ function dissue_views_data() {
   ), $plain_string_field);
 
   /* Issue user fields */
+  $data['dissue_user']['luid'] = array_merge(array(
+    'title' => t('Luid'),
+    'help' => t('The local id of the user.'),
+  ), $plain_num_field);
+
+  $data['dissue_user']['uid'] = array_merge(array(
+    'title' => t('Uid'),
+    'help' => t('The id of the user (if it\'s local).'),
+  ), $plain_num_field);
+
   $data['dissue_user']['name'] = array_merge(array(
     'title' => t('Username'),
     'help' => t('The name of the dissue user'),
   ), $plain_string_field);
 
   /* Relationships */
-  $data['dproject']['table']['join'] = array(
+  $data['dissue']['table']['join'] = array(
     'dissue_user' => array(
       'left_field' => 'luid',
       'field' => 'luid',
