@@ -2,16 +2,22 @@
 // $Id$
 
 class DIssue {
-  public static function issueDefaults(&$issue) {
+  public static function issueDefaults($issue) {
     $issue = (array)$issue;
     $projects = DIssue::getProjects();
     if (!$issue['project']) {
       $issue['project'] = url('', array('absolute' => TRUE));
     }
-    return (object)array_merge(array(
+
+    self::invokeByRef('dissue_defaults', $issue, 'before');
+    $values = array_merge(array(
+      'data' => array(),
       'luid' => DIssue::getLuid(),
       'version' => $projects[$issue['project']]['version'],
     ), $issue);
+    self::invokeByRef('dissue_defaults', $issue, 'after');
+
+    return (object)$values;
   }
 
   public function getLuid($account=NULL, $site=0) {
@@ -25,13 +31,13 @@ class DIssue {
       $account = $user;
     }
 
-    // Set default value for site if necessary. 
+    // Set default value for site if necessary.
     if (!$site) {
       $site = variable_get('dissue_local_site', 1);
     }
 
     // Fetch the local user id for the account
-    $luid = db_result(db_query("SELECT luid 
+    $luid = db_result(db_query("SELECT luid
       FROM {dissue_user}
       WHERE sid = %d
       AND uid = %d", array(
@@ -52,11 +58,25 @@ class DIssue {
     return $luid;
   }
 
+  private static function invokeByRef($hook, &$obj) {
+    // Construct our argument array
+    $args = func_get_args();
+    array_shift($args);
+    $args[0] = &$obj;
+
+    $modules = module_implements($hook);
+    foreach ($modules as $module) {
+      call_user_func_array($module . '_' . $hook, $args);
+    }
+  }
+
   public static function write(&$issue) {
     $update = isset($issue->liid)
-      ? array('liid') 
+      ? array('liid')
       : NULL;
+    self::invokeByRef('dissue_write', $issue, 'before', !$update);
     drupal_write_record('dissue', $issue, $update);
+    self::invokeByRef('dissue_write', $issue, 'after', !$update);
   }
 
   public static function issueTypes() {
@@ -123,7 +143,7 @@ class DIssue {
 
       $projects = array();
 
-      
+
 
       while ($p = db_fetch_object($res)) {
         $info = unserialize($p->info);
@@ -144,7 +164,7 @@ class DIssue {
         'version' => self::siteVersion(),
       )), $projects);
     }
-    
+
     return $projects;
   }
 }

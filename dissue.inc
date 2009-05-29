@@ -95,6 +95,8 @@ function _dissue_form_extend(&$form, $issue, $comment=FALSE) {
     '#options' => DIssue::issueStatuses(),
   );
 
+  // TODO: We need some ahah-stuff here to update the categories
+  //       based on what project the user has selected.
   $form['issue_options']['category'] = array(
     '#type' => 'select',
     '#title' => t('Category'),
