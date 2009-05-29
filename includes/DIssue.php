@@ -58,6 +58,16 @@ class DIssue {
     return $luid;
   }
 
+  public static function getLogItems($wids) {
+    $plch = db_placeholders($wids);
+    $res = db_query("SELECT * FROM {watchdog} WHERE wid IN({$plch})", $wids);
+    $items = array();
+    while ($i = db_fetch_object($res)) {
+      $items[] = $i;
+    }
+    return $items;
+  }
+
   private static function invokeByRef($hook, &$obj) {
     // Construct our argument array
     $args = func_get_args();
@@ -75,7 +85,16 @@ class DIssue {
       ? array('liid')
       : NULL;
     self::invokeByRef('dissue_write', $issue, 'before', !$update);
+    
+    // Serialize our data attribute, but hold on to a copy
+    $data = $issue->data;
+    $issue->data = json_encode($issue->data);
+    
     drupal_write_record('dissue', $issue, $update);
+    
+    // Restore non-serialized data
+    $issue->data = $data;
+    
     self::invokeByRef('dissue_write', $issue, 'after', !$update);
   }
 

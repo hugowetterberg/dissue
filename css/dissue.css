@@ -16,3 +16,9 @@
 .dissue-form .bulk-ops a {
   margin-right: 10px;
 }
+
+.dissue-form .watchdog-items .message {
+  border: 4px solid #999999;
+  border-left: none;
+  border-right: none;
+}

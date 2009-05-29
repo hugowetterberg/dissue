@@ -16,6 +16,16 @@ function dissue_autoload_info() {
 }
 
 /**
+ * Implementation of hook_views_api().
+ */
+function dissue_views_api() {
+  return array(
+    'api' => 2.0,
+    'path' => drupal_get_path('module', 'dissue') . '/views',
+  );
+}
+
+/**
  * @see DIssueHooks::theme().
  */
 function dissue_theme() {

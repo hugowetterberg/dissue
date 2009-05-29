@@ -15,6 +15,15 @@ function _dissue_create_submit($form, $form_state) {
     'category' => $values['issue_options']['category'],
     'status' => $values['issue_options']['status'],
   );
+
+  $log_ids = array();
+  foreach ($values['issue_watchdog'] as $wid => $checked) {
+    $log_ids[] = $wid;
+  }
+  if (!empty($log_ids)) {
+    $issue['data']['log'] = DIssue::getLogItems($log_ids);
+  }
+
   $issue = DIssue::issueDefaults($issue);
   DIssue::write($issue);
 }
@@ -80,7 +89,7 @@ function _dissue_form_extend(&$form, $issue, $comment=FALSE) {
     '#suffix' => '</div>',
     '#weight' => -1,
   );
-  
+
   $form['issue_options']['type'] = array(
     '#type' => 'select',
     '#title' => t('Issue type'),
@@ -103,7 +112,7 @@ function _dissue_form_extend(&$form, $issue, $comment=FALSE) {
     '#default_value' => _dissue_form_default($issue, 'category'),
     '#options' => DIssue::issueCategories(),
   );
-  
+
   if (module_exists('dblog')) {
     $form['issue_watchdog'] = array(
       '#type' => 'fieldset',
@@ -115,7 +124,7 @@ function _dissue_form_extend(&$form, $issue, $comment=FALSE) {
         'class' => 'watchdog-items',
       ),
     );
-    
+
     $res = db_query_range("SELECT wid, message, variables, timestamp FROM {watchdog}
       WHERE uid=%d
       ORDER BY timestamp DESC", array(
@@ -150,14 +159,14 @@ function _dissue_form_extend(&$form, $issue, $comment=FALSE) {
       '#value' => url('', array('absolute' => TRUE)),
     );
   }
-  
+
 }
 
 function _dissue_handle_webhook($hook, $id, $nonce=NULL) {
   switch ($hook) {
     case 'issue-updated':
   }
-  
+
   if ($nonce) {
     print md5($nonce);
     die;
