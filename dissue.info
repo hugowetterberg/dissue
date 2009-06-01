@@ -8,4 +8,5 @@ dependencies[] = rest_server
 dependencies[] = services_oauth
 dependencies[] = services_oop
 dependencies[] = autoload
+dependencies[] = views
 core = 6.x
